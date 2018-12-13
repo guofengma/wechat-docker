@@ -1,7 +1,6 @@
-app/.idea/
-app/target/
-app/log/
-*.iml
 .idea/
+target/
+log/
+*.iml
 .DS_Store
 

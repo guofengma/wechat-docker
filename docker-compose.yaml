@@ -1,25 +1,25 @@
 version: '3'
 services:
-    mysql:
-        container_name: v-mysql
-        image: mysql/mysql-server:5.7
-        environment:
-            MYSQL_DATABASE: wechat
-            MYSQL_ROOT_PASSWORD: root
-            MYSQL_ROOT_HOST: '%'
-        volumes:
-            - ./mysql_data:/var/lib/mysql
-        restart: always
+    # mysql:
+    #     container_name: v-mysql
+    #     image: mysql/mysql-server:5.7
+    #     environment:
+    #         MYSQL_DATABASE: wechat
+    #         MYSQL_ROOT_PASSWORD: root
+    #         MYSQL_ROOT_HOST: '%'
+    #     volumes:
+    #         - ./mysql_data:/var/lib/mysql
+    #     restart: always
     
     app:
         restart: always
-        build: ./app
+        build: .
         working_dir: /app
         volumes:
-            - ./app:/app
+            - .:/app
             - ~/.m2:/root/.m2
         ports:
-            - "9209:9209"
-        depends_on:
-            - mysql
+            - "9210:9210"
+        # depends_on:
+        #     - mysql
         command: mvn clean spring-boot:run -Dspring-boot.run.profiles=docker

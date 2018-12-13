@@ -1,31 +1,36 @@
 package com.mihoyo.hk4e.wechat.config;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mihoyo.hk4e.wechat.tools.Log;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.HandlerInterceptor;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class RequestHandlerInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder("in#request#");
         sb.append(request.getRemoteAddr())
-                .append("#")
-                .append(request.getMethod())
                 .append("#")
                 .append(request.getRequestURL())
                 .append("?")
-                .append(request.getQueryString()).append("#");
-
-        BufferedReader streamReader = new BufferedReader(new InputStreamReader(request.getInputStream(), "UTF-8"));
-        String inputStr;
-        while ((inputStr = streamReader.readLine()) != null)
-            sb.append(inputStr);
-
+                .append(request.getQueryString());
         Log.requestLog.info(sb.toString());
+
+        StringBuffer bf = new StringBuffer();
+        String line = null;
+        BufferedReader br = null;
+
+        br = request.getReader();
+        while(null != (line = br.readLine())) {
+            bf.append(line);
+        }
 
         return true;
     }

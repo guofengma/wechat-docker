@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS `wechat`;
-CREATE DATABASE IF NOT EXISTS `wechat` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `wechat`;
+DROP DATABASE IF EXISTS `hk4e_qa_wechat`;
+CREATE DATABASE IF NOT EXISTS `hk4e_qa_wechat` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `hk4e_qa_wechat`;
 
 DROP TABLE IF EXISTS `db_version`;
 CREATE TABLE `db_version` (
