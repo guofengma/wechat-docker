@@ -16,21 +16,14 @@ public class RequestHandlerInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         StringBuilder sb = new StringBuilder("in#request#");
-        sb.append(request.getRemoteAddr())
+        sb.append(request.getMethod())
+                .append("#")
+                .append(request.getRemoteAddr())
                 .append("#")
                 .append(request.getRequestURL())
                 .append("?")
                 .append(request.getQueryString());
         Log.requestLog.info(sb.toString());
-
-        StringBuffer bf = new StringBuffer();
-        String line = null;
-        BufferedReader br = null;
-
-        br = request.getReader();
-        while(null != (line = br.readLine())) {
-            bf.append(line);
-        }
 
         return true;
     }
@@ -39,10 +32,10 @@ public class RequestHandlerInterceptor implements HandlerInterceptor {
 //    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
 //    }
 
-//    @Override
-//    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-//        if(ex != null){
-//            Log.errorLog.error("Exception when {}", request.getMethod(), ex);
-//        }
-//    }
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        if(ex != null){
+            Log.errorLog.error("Exception when {}", request.getMethod(), ex);
+        }
+    }
 }

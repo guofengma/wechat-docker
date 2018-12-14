@@ -8,11 +8,13 @@ import com.mihoyo.hk4e.wechat.repository.TokenRepository;
 import com.mihoyo.hk4e.wechat.service.FileService;
 import com.mihoyo.hk4e.wechat.service.MessageService;
 import com.mihoyo.hk4e.wechat.tools.Log;
+import com.mihoyo.hk4e.wechat.tools.RandomUtils;
+import org.apache.logging.log4j.util.StringBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
+import java.util.*;
 
 //import com.mihoyo.hk4e.wechat.service.SourceService;
 
@@ -31,11 +33,15 @@ public class HomeController {
      * just test if the service ok
      * @return
      */
-    @RequestMapping("/test")
+    @RequestMapping("/live")
     public String index(){
+        return "Just for test, the wechat callback server >_<";
+    }
 
-        test1();
-        return "Just for test, the wechat platform simulator >_<";
+    @RequestMapping("/winter")
+    public String secret(){
+        test2();
+        return "1.2Winter, winter, beautiful winter!";
     }
 
     private void test1(){
@@ -52,5 +58,38 @@ public class HomeController {
         messageService.sendMessage(ms);
     }
 
+    private void test2(){
+        List<Object> poem = new ArrayList<>();
+        poem.add("桃花依旧笑春风");
+        poem.add("相见时难别亦难");
+        poem.add("守得云开见月明");
+        poem.add("花开堪折直须折");
+        poem.add("红粉相随南浦晚");
+        poem.add("任是无情也动人");
+        poem.add("红藕香残玉簟秋");
+        poem.add("芒果布丁喵喵喵");
 
+        List<Object> poemList = RandomUtils.randomGet(poem, 4);
+
+        Map<Object, Integer> luck = new HashMap<>();
+        luck.put("小吉", 40);
+        luck.put("中吉", 20);
+        luck.put("大吉", 5);
+        luck.put("超级无敌吉", 1);
+
+        String luckTag = RandomUtils.weightGet(luck).toString();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("今日运势：")
+                .append(luckTag)
+                .append("\n--------------\n");
+        for(Object p: poemList){
+            sb.append(p.toString()).append("\n");
+        }
+
+        MessageSender ms = messageService.createOneMessageSender(MsgType.TEXT);
+        ms.addUser("xingyi.song");
+        ms.setContent(sb.toString());
+        messageService.sendMessage(ms);
+    }
 }
