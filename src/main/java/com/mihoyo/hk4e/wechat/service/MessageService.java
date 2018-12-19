@@ -76,4 +76,42 @@ public class MessageService {
         MessageSender ms = new MessageSender(msgType, agentId);
         return ms;
     }
+
+    public Result<Object> sendMessageDirect(JSONObject json){
+        Result<Object> result = new Result<>();
+
+        Token token = tokenService.getToken();
+        if(token == null){
+            result.setCode(Constants.RESULT_STATE_FAIL);
+            return result;
+        }
+
+        Map<String, String> params = new HashMap<>();
+        params.put("access_token", token.getContent());
+        StringEntity entity = new StringEntity(json.toString(), charset);
+        try{
+            HttpResponse response = HttpsUtils.doHttpsPost(wxUrlMessageSend, params, entity);
+            if(response != null){
+                JSONObject respJson = JSONObject.parseObject(EntityUtils.toString(response.getEntity()));
+                int errcode = respJson.getIntValue("errcode");
+                String errmsg = respJson.getString("errmsg");
+                String invaliduser = respJson.getString("invaliduser");
+                String invalidparty = respJson.getString("invalidparty");
+                String invalidtag = respJson.getString("invalidtag");
+
+                logger.info("sendMessage success errcode:"+errcode
+                        +" errmsg:"+errmsg
+                        +" invaliduser:"+invaliduser
+                        +" invalidparty:"+invalidparty
+                        +" invalidtag:"+invalidtag);
+                result.setCode(errcode);
+                result.setErrMsg(errmsg);
+                return result;
+            }
+        }catch(Exception e){
+            logger.error("", e);
+        }
+        result.setCode(Constants.RESULT_STATE_FAIL);
+        return result;
+    }
 }

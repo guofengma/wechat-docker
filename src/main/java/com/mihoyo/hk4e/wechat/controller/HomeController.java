@@ -40,8 +40,7 @@ public class HomeController {
 
     @RequestMapping("/winter")
     public String secret(){
-        test2();
-        return "1.2Winter, winter, beautiful winter!";
+        return "1.5Winter, winter, beautiful winter!";
     }
 
     private void test1(){
@@ -55,41 +54,6 @@ public class HomeController {
         ms.addUser("xingyi.song");
 //        ms.setContent(media_id);
         ms.setContent("hello");
-        messageService.sendMessage(ms);
-    }
-
-    private void test2(){
-        List<Object> poem = new ArrayList<>();
-        poem.add("桃花依旧笑春风");
-        poem.add("相见时难别亦难");
-        poem.add("守得云开见月明");
-        poem.add("花开堪折直须折");
-        poem.add("红粉相随南浦晚");
-        poem.add("任是无情也动人");
-        poem.add("红藕香残玉簟秋");
-        poem.add("芒果布丁喵喵喵");
-
-        List<Object> poemList = RandomUtils.randomGet(poem, 4);
-
-        Map<Object, Integer> luck = new HashMap<>();
-        luck.put("小吉", 40);
-        luck.put("中吉", 20);
-        luck.put("大吉", 5);
-        luck.put("超级无敌吉", 1);
-
-        String luckTag = RandomUtils.weightGet(luck).toString();
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("今日运势：")
-                .append(luckTag)
-                .append("\n--------------\n");
-        for(Object p: poemList){
-            sb.append(p.toString()).append("\n");
-        }
-
-        MessageSender ms = messageService.createOneMessageSender(MsgType.TEXT);
-        ms.addUser("xingyi.song");
-        ms.setContent(sb.toString());
         messageService.sendMessage(ms);
     }
 }

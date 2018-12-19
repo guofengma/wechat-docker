@@ -4,6 +4,7 @@ import com.mihoyo.hk4e.wechat.constants.MsgType;
 import com.mihoyo.hk4e.wechat.constants.Tips;
 import com.mihoyo.hk4e.wechat.dto.MessageSender;
 import com.mihoyo.hk4e.wechat.service.MessageService;
+import com.mihoyo.hk4e.wechat.service.PoemService;
 import com.mihoyo.hk4e.wechat.service.WxCryptService;
 import com.mihoyo.hk4e.wechat.tools.Log;
 import com.mihoyo.hk4e.wechat.tools.qq.WXBizMsgCrypt;
@@ -28,6 +29,9 @@ public class ServiceController {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private PoemService poemService;
 
     @RequestMapping(value = "/service", method = RequestMethod.GET)
     public String verify(@RequestParam("msg_signature") String msgSignature,
@@ -81,13 +85,16 @@ public class ServiceController {
             Log.requestLog.info("user: " + userName);
 
             String backMsg = "哼，不想理你！";
-            if(msgType == "text"){
+            if(msgType.equals("text")){
                 NodeList nodeListContent = root.getElementsByTagName("Content");
                 String msg = nodeListContent.item(0).getTextContent();
                 Log.requestLog.info("msg: " + msg);
 
-                if(msg == "你好") {
+                if(msg.equals("你好")) {
                     backMsg = "一点都不好";
+                }
+                if(msg.equals("求签")){
+                    backMsg = poemService.getLuck();
                 }
             }
 
