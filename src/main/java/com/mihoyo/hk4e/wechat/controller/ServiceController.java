@@ -2,7 +2,10 @@ package com.mihoyo.hk4e.wechat.controller;
 
 import com.mihoyo.hk4e.wechat.constants.MsgType;
 import com.mihoyo.hk4e.wechat.constants.Tips;
+import com.mihoyo.hk4e.wechat.dto.HandlerParam;
+import com.mihoyo.hk4e.wechat.dto.HandlerResult;
 import com.mihoyo.hk4e.wechat.dto.MessageSender;
+import com.mihoyo.hk4e.wechat.service.ChainService;
 import com.mihoyo.hk4e.wechat.service.MessageService;
 import com.mihoyo.hk4e.wechat.service.PoemService;
 import com.mihoyo.hk4e.wechat.service.WxCryptService;
@@ -28,10 +31,7 @@ public class ServiceController {
     private WxCryptService wxCryptService;
 
     @Autowired
-    private MessageService messageService;
-
-    @Autowired
-    private PoemService poemService;
+    private ChainService chainService;
 
     @RequestMapping(value = "/service", method = RequestMethod.GET)
     public String verify(@RequestParam("msg_signature") String msgSignature,
@@ -84,25 +84,12 @@ public class ServiceController {
             String userName = nodeListName.item(0).getTextContent();
             Log.requestLog.info("user: " + userName);
 
-            String backMsg = "哼，不想理你！";
-            if(msgType.equals("text")){
-                NodeList nodeListContent = root.getElementsByTagName("Content");
-                String msg = nodeListContent.item(0).getTextContent();
-                Log.requestLog.info("msg: " + msg);
-
-                if(msg.equals("你好")) {
-                    backMsg = "一点都不好";
-                }
-                if(msg.equals("求签")){
-                    backMsg = poemService.getLuck();
-                }
+            HandlerParam param = new HandlerParam(userName, msgType, root);
+            HandlerResult result = chainService.handle(param);
+            String backMsg = result != null ? result.getBackMsg() : "handler not found";
+            if(result == null){
+                Log.errorLog.error("handler not found when msg:{}", sMsg);
             }
-
-            MessageSender ms = messageService.createOneMessageSender(MsgType.TEXT);
-            ms.addUser(userName);
-            ms.setContent(backMsg);
-            messageService.sendMessage(ms);
-
             String encryptMsg = wxcpt.EncryptMsg(backMsg, timestamp, nonce);
             Log.requestLog.info("加密后: " + encryptMsg);
             return encryptMsg;

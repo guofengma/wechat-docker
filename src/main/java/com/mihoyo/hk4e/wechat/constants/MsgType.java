@@ -25,4 +25,27 @@ public enum MsgType {
         json.put(this.tag, tagValue);
         return json;
     }
+
+
+    /**
+     * 根据msgType返回对应的MsgType
+     * @param msgType
+     * @return
+     */
+    public static MsgType getByMsgType(String msgType){
+        for(MsgType mt : MsgType.values()){
+            if(mt.getMsgType().equals(msgType)){
+                return mt;
+            }
+        }
+        return null;
+        /**
+         * 其实可以直接通过"TEXT"找到对应的MsgType.TEXT对象
+         * 这里的"TEXT"是TEXT这个属性的 而不是("text", "content")的text
+         * 因为外面传过来的是text 而且一般枚举类型的属性命名是大写的 所以很尴尬有了上面的方法
+         *
+         * 如果可以的 更简单的方法是
+         * MsgType result = MsgType.valueOf("TEXT");
+         */
+    }
 }

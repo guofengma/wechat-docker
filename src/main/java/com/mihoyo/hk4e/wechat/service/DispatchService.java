@@ -1,5 +1,7 @@
-package com.mihoyo.hk4e.wechat.demo;
+package com.mihoyo.hk4e.wechat.service;
 
+import com.mihoyo.hk4e.wechat.comm.handler.IServiceHandler;
+import com.mihoyo.hk4e.wechat.dto.HandlerResult;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
@@ -19,12 +21,12 @@ public class DispatchService implements InitializingBean{
      * @param input
      * @return
      */
-    public String dispatchAndHandle(int type, String input){
+    public HandlerResult dispatchAndHandle(int type, String input){
         IServiceHandler serviceHandler = handlerMap.get(type);
         if(serviceHandler == null){
-            return "没找到对应的处理器";
+            return null;
         }
-        return serviceHandler.handle(input);
+        return serviceHandler.handle(null);
     }
 
     /**
@@ -37,7 +39,6 @@ public class DispatchService implements InitializingBean{
     @Override
     public void afterPropertiesSet() throws Exception {
         //这里假设数据库处理的handler的type是1
-        handlerMap.put(1, new DBServiceHandler());
         /**
          * 这里算是注册所有的handler
          */
